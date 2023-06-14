@@ -60,15 +60,15 @@ class PollController extends AbstractController
 
         $repository = $entityManagerInterface->getRepository(Question::class);
 
-        foreach($payload['quuestions'] as $question) {
-            $question = $repository->find($question);
+        foreach($payload['questions'] as $questionId) {
+            $question = $repository->find($questionId);
             $poll->addQuestion($question);
         }
     
         $entityManagerInterface->persist($poll);
         $entityManagerInterface->flush();
     
-        $serializedPoll = $serializer->serialize($poll, 'json');
+        $serializedPoll = $serializer->serialize($poll, 'json',  ['ignored_attributes' => ['question']]);
     
         return new JsonResponse(
             $serializedPoll,
@@ -86,10 +86,11 @@ class PollController extends AbstractController
         $poll = $repository->find($id);
 
         if(null !== $poll) {
-            // foreach($poll->getQuestions() as $question)
-            // {
-            //     $question->setPoll()
-            // }
+            foreach($poll->getQuestions() as $question)
+            {
+                $question->setPoll(null);
+                $entityManagerInterface->persist($question);
+            }
             $entityManagerInterface->remove($poll);
             $entityManagerInterface->flush();
         }
@@ -109,26 +110,14 @@ class PollController extends AbstractController
         if ($poll === null) {
             return new JsonResponse(['message' => 'Poll not found'], Response::HTTP_NOT_FOUND);
         }
-        if (!isset($payload['wording'])) {
-            return new JsonResponse(['error' => 'The value wording should not be blank'], Response::HTTP_BAD_REQUEST);
-        }
-        if (!isset($payload['answers'])) {
-            return new JsonResponse(['error' => 'The value answers should not be blank'], Response::HTTP_BAD_REQUEST);
+        if (!isset($payload['title'])) {
+            return new JsonResponse(['error' => 'The value title should not be blank'], Response::HTTP_BAD_REQUEST);
         }
     
-        $poll->setWording($payload['wording']);
-        $poll->getQuestions()->clear();
-        $entityManagerInterface->flush();
-
-        foreach ($payload['questions'] as $question) {
-            $question = (new Question())
-                ->setWording($question['wording']);
-                $poll->addQuestion($question);
-        }
-         
+        $poll->setTitle($payload['title']);
         $entityManagerInterface->flush();
     
-        $serializedPoll = $serializer->serialize($question, 'json', ['ignored_attributes' => ['question']]);
+        $serializedPoll = $serializer->serialize($poll, 'json', ['ignored_attributes' => ['question']]);
     
         return new JsonResponse(
             $serializedPoll,
