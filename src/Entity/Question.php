@@ -19,6 +19,7 @@ class Question{
     #[ORM\Column(type: 'text')]
     private ?string $wording= null;
 
+    #[Ignore]
     #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private ?Collection $answers;
 

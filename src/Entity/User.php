@@ -2,7 +2,10 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use PhpParser\ErrorHandler\Collecting;
 
 #[ORM\Entity()]
 #[ORM\Table(name: 'users')]
@@ -25,6 +28,22 @@ class User{
     #[ORM\OneToOne(targetEntity: Address::class, cascade: ['persist', 'remove'])]
     private ?Address $address = null;
 
+    #[ORM\OneToMany(targetEntity:Participation::class, mappedBy: 'user')]
+    private ?Collection $participations;
+
+    public function __construct()
+    {
+        $this->participations = new ArrayCollection();
+    }
+
+    // #[ORM\ManyToMany(targetEntity: Poll::class)]
+    // #[ORM\JoinTable(name: 'participations')]
+    // private ?Collection $polls;
+
+    // public function __construct()
+    // {
+    //     $this->polls = new ArrayCollection();
+    // }
 
     public function getId(): ?int
     {
@@ -90,6 +109,47 @@ class User{
             $this->getAddress()->setStreet($address['street'])
             ->setCity($address['city'])
             ->setCountry($address['country']);
+        }
+        return $this;
+    }
+
+    public function getParticipations(): ?Collection
+    {
+        return $this->participations;
+    }
+
+    public function addParticipation(?Participation $participation): self
+    {
+        if (!$this->participations->contains($participation)) {
+            $this->participations->add($participation);
+            $participation->setUser($this);
+        }
+        return $this;
+    }
+
+
+    public function removeParticipation(Participation $participation): self
+    {
+        if($this->participations->removeElement($participation))
+        {
+            if($participation->getUser() === $this){
+                $participation->setUser(null);
+            }
+        }
+        return $this;
+
+    }
+
+    public function setParticipations(array $participations): self
+    {
+        $this->participations->clear();
+
+        foreach($participations as $participation)
+        {
+            $participations = (new Participation())
+            ->setDate($participation['date']);
+
+            $this->addParticipation($participation);
         }
         return $this;
     }
