@@ -1,0 +1,12 @@
+Poll:
+  type: object
+  config: 
+    fields:
+      id:
+        type: 'Int!'
+        description: 'The unique ID of the poll'
+      title:
+        type: 'String!'
+      questions:
+        type: '[Question]'
+        

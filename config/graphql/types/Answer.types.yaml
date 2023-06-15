@@ -1,0 +1,10 @@
+Answer:
+  type: object
+  config: 
+    fields:
+      id:
+        type: 'Int!'
+        description: 'The unique ID of the answer'
+      wording:
+        type: 'String!'
+        

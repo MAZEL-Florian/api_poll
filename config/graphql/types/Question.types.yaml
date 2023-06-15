@@ -1,0 +1,12 @@
+Question:
+  type: object
+  config: 
+    fields:
+      id:
+        type: 'Int!'
+        description: 'The unique ID of the question'
+      wording:
+        type: 'String!'
+      answers:
+        type: '[Answer]'
+        

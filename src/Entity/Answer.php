@@ -24,7 +24,6 @@ class Answer{
         return $this->id;
     }
 
-
     public function setId(int $id): Answer
     {
         $this->id = $id;

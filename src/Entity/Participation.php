@@ -24,7 +24,7 @@ class Participation{
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'participations')]
     private ?User $user = null;
 
-    #[ORM\OneToMany(targetEntity: Choice::class, mappedBy: 'participations', cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: Choice::class, mappedBy: 'participations', cascade: ['persist', 'remove'], orphanRemoval: true)]
 private ?Collection $choices;
 
     

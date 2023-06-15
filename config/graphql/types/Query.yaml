@@ -1,0 +1,13 @@
+Query:
+  type: object
+  config:
+    fields:
+      Polls:
+        type: '[Poll]'
+        resolve: "@=resolver('Polls')"
+      Poll:
+        type: 'Poll'
+        args:
+          id:
+            type: 'Int!'
+        resolve: "@=resolver('Poll', [args['id']])"

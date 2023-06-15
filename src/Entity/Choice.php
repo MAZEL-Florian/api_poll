@@ -14,15 +14,14 @@ class Choice{
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[Ignore]
-    #[ORM\OneToOne(targetEntity: Question::class)]
+    #[ORM\ManyToOne(targetEntity: Question::class)]
     private ?Question $question = null;
 
-    #[ORM\OneToOne(targetEntity: Answer::class, inversedBy: 'choices')]
+    #[ORM\ManyToOne(targetEntity: Answer::class)]
     private ?Answer $answer = null;
 
-    #[Ignore]
     #[ORM\ManyToOne(targetEntity: Participation::class, inversedBy: 'choices')]
+    #[Ignore]
     private ?Participation $participation = null;
 
     public function getId(): ?int

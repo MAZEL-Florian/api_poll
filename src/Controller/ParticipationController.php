@@ -87,19 +87,20 @@ class ParticipationController extends AbstractController
         $participation = (new Participation())
         ->setPoll($poll);
 
-    foreach ($payload['choices'] as $questionId => $answerId) {
-        $question = $entityManager->getRepository(Question::class)->find($questionId);
-        $answer = $entityManager->getRepository(Answer::class)->find($answerId);
-
-        if ($question && $answer) {
+        $questionRepository = $entityManager->getRepository(Question::class);
+        $answerRepository = $entityManager->getRepository(Answer::class);
+        foreach ($payload['choices'] as $questionId => $answerId) {
+            $question = $questionRepository->find($questionId);
+            $answer = $answerRepository->find($answerId);
+            if ($question === null || $answerId === null || $answer->getQuestion() !== $question) {
+                return new JsonResponse(['message' => 'Poll not found'], Response::HTTP_BAD_REQUEST);
+            }
             $choice = (new Choice())
                 ->setQuestion($question)
-                ->setAnswer($answer)
-                ->setParticipation($participation);
+                ->setAnswer($answer);
 
             $participation->addChoice($choice);
         }
-    }
         
         
         $user->addParticipation($participation);
