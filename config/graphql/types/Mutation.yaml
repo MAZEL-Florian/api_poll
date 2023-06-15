@@ -1,0 +1,18 @@
+Mutation:
+  type: object
+  config: 
+    fields:
+      createPoll:
+        type: PollPayload
+        resolve: "@=mutation('createPoll', [args])"
+        args:
+          title:
+            type: 'String!'
+
+PollPayload:
+  type: object
+  config:
+    fields:
+      content:
+        type: Poll!
+        

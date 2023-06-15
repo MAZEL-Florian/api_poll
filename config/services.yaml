@@ -19,6 +19,10 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+    
+    App\GraphQL\Mutation\:
+        resource: '../src/GraphQL/Mutation'
+        tags: ['overblog_graphql.mutation']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
